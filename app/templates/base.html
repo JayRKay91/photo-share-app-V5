@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Photo Share App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
+
+  <!-- Optional: Icons or other custom CSS -->
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="sidebar-heading">Menu</h2>
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('gallery.index') }}">Gallery</a></li>
+          <li><a href="{{ url_for('album.albums') }}">Albums</a></li>
+          <li><a href="#">Shared</a></li>
+          <li><a href="#">Archive</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="layout-wrapper content">
+      <header class="page-header">
+        <h1>📸 Photo Share</h1>
+
+        {% if current_user.is_authenticated %}
+          <div class="auth-controls">
+            <a href="{{ url_for('upload.upload') }}" class="btn btn-primary">➕ Upload</a>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary ms-2">Logout</a>
+          </div>
+        {% else %}
+          <div class="auth-controls">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Login</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
+          </div>
+        {% endif %}
+      </header>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, msg in messages %}
+              <li class="flash-{{ category }}">{{ msg }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Main Content Block -->
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

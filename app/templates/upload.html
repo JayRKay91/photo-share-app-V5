@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Upload Media</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Upload New Photo(s) or Video(s)</h1>
+    <nav>
+      <a href="{{ url_for('main.index') }}">← Back to Gallery</a>
+    </nav>
+  </header>
+
+  <section class="messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, msg in messages %}
+            <li class="flash-{{ category }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </section>
+
+  <main>
+    <form
+      id="uploadForm"
+      method="post"
+      enctype="multipart/form-data"
+      class="upload-form"
+    >
+      <!-- Owner selection for shared access -->
+      <div class="form-group">
+        {% if shared_accesses %}
+          <label for="owner_id">Upload to gallery:</label>
+          <select name="owner_id" id="owner_id">
+            <option value="{{ current_user.id }}">My Gallery</option>
+            {% for access in shared_accesses %}
+              <option value="{{ access.owner.id }}">
+                {{ access.owner.username }}’s Gallery (as {{ access.alias }})
+              </option>
+            {% endfor %}
+          </select>
+        {% else %}
+          <input type="hidden" name="owner_id" value="{{ current_user.id }}">
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="photos">Select one or more photos or videos:</label>
+        <input
+          type="file"
+          id="photos"
+          name="photos"
+          multiple
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="album">Choose an album:</label>
+        <select name="album" id="album">
+          <option value="">-- Select an Album --</option>
+          {% for title in album_titles %}
+            <option value="{{ title }}">{{ title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="new_album">Or create a new album:</label>
+        <input
+          type="text"
+          id="new_album"
+          name="new_album"
+          placeholder="Enter new album name"
+        >
+      </div>
+
+      <button type="submit">Upload Media</button>
+    </form>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+</body>
+</html>

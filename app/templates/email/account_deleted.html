@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+  <h1>Account Deleted</h1>
+</header>
+
+<main>
+  <div class="auth-form">
+    <p>Your account has been permanently deleted. We're sorry to see you go.</p>
+
+    <p class="text-note">
+      If this was a mistake or you'd like to come back, feel free to <a href="{{ url_for('auth.register') }}">create a new account</a>.
+    </p>
+
+    <p class="text-note">
+      <a href="{{ url_for('gallery.index') }}">Return to homepage</a>
+    </p>
+  </div>
+</main>
+{% endblock %}
