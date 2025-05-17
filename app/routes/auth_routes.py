@@ -5,6 +5,7 @@ from flask import (
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import SignatureExpired, BadSignature
+from sqlalchemy import or_
 
 from app.extensions import db
 from app.models import User
@@ -52,17 +53,18 @@ def register():
 
     return render_template("auth/register.html")
 
-
 # ──────────────────────────────────────────────────────────────────────────────
 # 🔐 LOGIN: Allow only verified users to log in
 # ──────────────────────────────────────────────────────────────────────────────
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
+        identifier = request.form.get("identifier", "").strip()
         password = request.form.get("password", "").strip()
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter(
+            or_(User.username == identifier, User.email == identifier)
+        ).first()
 
         if user and check_password_hash(user.password_hash, password):
             if not user.is_verified:
@@ -73,10 +75,9 @@ def login():
             flash(f"Welcome back, {user.username}!", "success")
             return redirect(request.args.get("next") or url_for("gallery.index"))
         else:
-            flash("Invalid username or password", "error")
+            flash("Invalid username/email or password", "error")
 
     return render_template("auth/login.html")
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 🔓 LOGOUT
@@ -87,7 +88,6 @@ def logout():
     logout_user()
     flash("You’ve been logged out.", "info")
     return redirect(url_for("auth.login"))
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 📧 VERIFY: Activate user account from email link
@@ -117,7 +117,6 @@ def verify_token(token):
 
     return redirect(url_for("auth.login"))
 
-
 # ──────────────────────────────────────────────────────────────────────────────
 # 🔁 RESEND VERIFICATION EMAIL (requires login)
 # ──────────────────────────────────────────────────────────────────────────────
@@ -130,7 +129,6 @@ def resend_verification():
         send_verification_email(current_user)
         flash("A new verification email has been sent.", "info")
     return redirect(url_for("auth.login"))
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 🔑 RESET PASSWORD REQUEST: User submits email to get reset link
@@ -148,7 +146,6 @@ def reset_request():
         return redirect(url_for("auth.login"))
 
     return render_template("auth/reset_password.html")
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 🔄 RESET PASSWORD TOKEN HANDLER: Link from email opens reset form
