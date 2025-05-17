@@ -28,4 +28,3 @@ class Config:
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
     # OAuth2 helper for fetching the SMTP bearer token
-    MAIL_OAUTH_OAUTH2_TOKEN = get_mail_access_token
