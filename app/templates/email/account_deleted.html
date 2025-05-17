@@ -1,21 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<header class="page-header">
-  <h1>Account Deleted</h1>
-</header>
+<div class="layout-wrapper content">
+  <header class="page-header">
+    <h1>Account Deleted</h1>
+  </header>
 
-<main>
-  <div class="auth-form">
-    <p>Your account has been permanently deleted. We're sorry to see you go.</p>
+  <main>
+    <div class="auth-form" style="max-width: 600px; margin: auto; padding: 2rem; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center;">
+      <p>Your account has been permanently deleted. We're sorry to see you go.</p>
 
-    <p class="text-note">
-      If this was a mistake or you'd like to come back, feel free to <a href="{{ url_for('auth.register') }}">create a new account</a>.
-    </p>
+      <p class="text-note" style="margin-top: 1rem;">
+        If this was a mistake or you'd like to come back, feel free to 
+        <a href="{{ url_for('auth.register') }}" class="btn btn-link">create a new account</a>.
+      </p>
 
-    <p class="text-note">
-      <a href="{{ url_for('gallery.index') }}">Return to homepage</a>
-    </p>
-  </div>
-</main>
+      <p class="text-note" style="margin-top: 0.5rem;">
+        <a href="{{ url_for('gallery.index') }}" class="btn btn-secondary">Return to Homepage</a>
+      </p>
+    </div>
+  </main>
+</div>
 {% endblock %}
