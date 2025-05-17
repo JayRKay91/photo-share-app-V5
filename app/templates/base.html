@@ -69,3 +69,6 @@
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>
+{% if current_user.is_authenticated %}
+  <a href="{{ url_for('auth.delete_account') }}" class="btn btn-danger">Delete Account</a>
+{% endif %}

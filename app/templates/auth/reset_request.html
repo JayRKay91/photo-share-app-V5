@@ -35,14 +35,14 @@
         button {
             width: 100%;
             padding: 0.75rem;
-            background-color: #ffc107;
+            background-color: #007bff;
             border: none;
             border-radius: 8px;
             color: white;
             font-size: 1rem;
         }
         button:hover {
-            background-color: #e0a800;
+            background-color: #0056b3;
         }
         .form-footer {
             margin-top: 1rem;
@@ -59,11 +59,25 @@
 </head>
 <body>
     <div class="reset-container">
-        <h2>Reset Your Password</h2>
-        <form method="POST">
+        <h2>Forgot Your Password?</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul style="list-style: none; padding: 0; margin-bottom: 1rem;">
+              {% for category, message in messages %}
+                <li style="color: {% if category == 'error' %}red{% elif category == 'success' %}green{% else %}#333{% endif %}; padding: 0.5rem 0;">
+                  {{ message }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.reset_request') }}">
             <input type="email" name="email" placeholder="Enter your email" required>
-            <button type="submit">Send Reset Link</button>
+            <button type="submit">📧 Send Reset Link</button>
         </form>
+
         <div class="form-footer">
             <a href="{{ url_for('auth.login') }}">Back to login</a>
         </div>
